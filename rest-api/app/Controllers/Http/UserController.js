@@ -8,18 +8,28 @@ class UserController {
    *
    * @param {object} ctx
    */
-    store ({request}) {
+    async store ({request}) {
         // Data received, minus username
         const {password,email} = request.all();
         
         // Assign the email as username
-        const user = User.create(
+        const user = await User.create(
             {password,
             email,
             username: email});
         
         return user;
+    }
 
+    /**
+     * Login with email and password using Method JWS for validations
+     * for validation token https://jwt.io/
+     * @param {object} request 
+     */
+    async login({request , auth }) {
+        const {email, password} = request.all();
+        const token = await auth.attempt(email, password);
+        return token;
     }
 }
 
